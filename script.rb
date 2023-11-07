@@ -1,3 +1,5 @@
+require 'pry-byebug'
+
 class Node
     attr_accessor :value, :left_child, :right_child
 
@@ -32,7 +34,57 @@ class Tree
         puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.value}"
         pretty_print(node.left_child, "#{prefix}#{is_left ? '    ' : '│   '}", true) if node.left_child
       end
+
+      def insert(value)
+        current_node = @root
+        new_node = Node.new(value)
+        loop do
+          if value < current_node.value
+            if current_node.left_child == nil
+              current_node.left_child = new_node
+              break
+            elsif current_node.left_child != nil
+              current_node = current_node.left_child
+              next
+              end
+          elsif value > current_node.value
+            if current_node.right_child == nil
+              current_node.right_child = new_node
+              break
+            elsif current_node.right_child != nil
+                current_node = current_node.right_child
+                next
+              end
+            end
+        end
+      end
+
+      def delete(value)
+        current_node = @root
+        previous_node = @root
+        if value < current_node.value && current_node.left_child != nil
+          previous_node = current_node
+          current_node = current_node.left_child
+        elsif value > current_node.value && current_node.right_child != nil
+          previous_node = current_node
+          current_node = current_node.right_child
+        elsif value == current_node.value && current_node.left_child == nil && current_node.right_child == nil
+          current_node.delete
+        elsif value == current_node.value && current_node.left_child == nil && current_node.right_child != nil
+          right_child = current_node.right_child
+          current_node = right_child
+          current_node.right_child = nil
+
+        end
+      end
+
+
+
+
 end
 
 tree = Tree.new([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324])
+tree.pretty_print
+tree.insert(15)
+tree.insert(6)
 tree.pretty_print
